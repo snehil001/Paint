@@ -1,0 +1,17 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+body{
+  touch-action: none;
+}
+canvas {
+  display: block;
+}
+hr{
+  margin-top: 0px;
+}
+button{
+  margin: 5px 0px 0px 0px;
+  font-size: 15px;
+}
