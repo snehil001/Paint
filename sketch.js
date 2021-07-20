@@ -1,4 +1,4 @@
-
+/*Powered by SNEHIL KUMAR*/
 
 let redSlider;
 let greenSlider;
@@ -10,26 +10,39 @@ let fillColorDiv;
 let thickSlider;
 let thickSpan;
 
-let strokeRed, strokeGreen, strokeBlue, strokeAlpha, fillRed, fillGreen, fillBlue, fillAlpha, thickness;
+let strokeRed, strokeGreen, strokeBlue, strokeAlpha;
+let fillRed, fillGreen, fillBlue, fillAlpha;
+let thickness;
 
-let allPath = [];
 let currentPath=[];
 let isDrawing = false;
 
+let cnv;
+
+let allowToDrawButtonColors = ["pink", "transparent"];
+let colIndex = 0;
+
+let cnvWidth = 0;
+let cnvHeight = 0;
+
+
+
+
+
 
 function setup() {
-  let cnv = createCanvas(windowWidth, windowHeight/2);
+  if(windowWidth >= 601){ // PC
+    cnvWidth = windowWidth*0.7;
+    cnvHeight = windowHeight*0.7;
+  }else if(windowWidth <= 600){  // MOBILE
+    cnvWidth = windowWidth*0.8;
+    cnvHeight = windowHeight*0.5;
+  }
+
+  cnv = createCanvas(cnvWidth, cnvHeight);
   cnv.parent("canvasDiv");
-  
-  
-  /*
-  //our master piece buffer
-  art=createGraphics(width, height);
-  
-  //a extra buffer on top of art buffer to show mouse trails
-  layer=createGraphics(width, height);
-  */
-  
+
+
 
   //stroke color
   strokeRed = 208;
@@ -43,109 +56,112 @@ function setup() {
   fillAlpha = 0;
   //stroke weight
   thickness = 5;
-  
-  /*
-  //the inside of the shape is made transparent
-  art.fill(0,0);
-  //some border color of the shape drawn is given
-  art.stroke(artStrokeRed, artStrokeGreen, artStrokeBlue, artStrokeAlpha);
-  art.strokeWeight(artStrokeWeight);
-  art.clear();
-  */
-  /*
-  //the inside of trailing circles is transparent
-  layer.noFill();
-  //the border color of the trailing circles is black
-  layer.stroke(0);
-  layer.clear();
-  */
- 
-  
-  
+
+
+  //Buttons for save, delete and start drawing
   let saveButton = createButton('Save Master Piece');
   saveButton.mouseClicked(pleaseSave);
   saveButton.parent("one");
-  
+
   let clearButton = createButton('🗑️');
   clearButton.mouseClicked(pleaseClearArt);
   clearButton.parent("one");
 
-  
-  
+  let drawButton = createButton('🖌');
+  drawButton.mouseClicked(startStopDrawing);
+  drawButton.parent('one');
+  drawButton.id("startStopDrawing");
+  drawButton.style("background-color", allowToDrawButtonColors[colIndex]);
+
+
+
+
+  //Sliders for red, green, blue, and alpha
   redSlider=createSlider(0, 255, strokeRed, 1);
   redSlider.id("redSlider");
   redSlider.parent("two");
- 
+
+
   greenSlider=createSlider(0, 255, strokeGreen, 1);
   greenSlider.id("greenSlider");
   greenSlider.parent("two");
-  
 
 
   blueSlider=createSlider(0, 255, strokeBlue, 1);
   blueSlider.id("blueSlider");
-  blueSlider.parent("three");
+  blueSlider.parent("two");
+
 
   alphaSlider=createSlider(0, 255, strokeAlpha, 1);
   alphaSlider.id("alphaSlider");
-  alphaSlider.parent("three");
+  alphaSlider.parent("two");
 
 
   redSlider.input(displayCurrentColor);
   greenSlider.input(displayCurrentColor);
   blueSlider.input(displayCurrentColor);
   alphaSlider.input(displayCurrentColor);
-  
 
-  
+
+
+
+  //Displaying current colors selected
   currentColorDiv = createDiv('Current Color');
   currentColorDiv.class("colorShow");
-  currentColorDiv.parent("four");
+  currentColorDiv.parent("three");
 
   strokeColorDiv = createDiv('Stroke Color');
   strokeColorDiv.class("colorShow");
-  strokeColorDiv.parent("four");
+  strokeColorDiv.parent("three");
 
   fillColorDiv = createDiv('Fill Color');
   fillColorDiv.class("colorShow");
-  fillColorDiv.parent("four");
-  
-  
+  fillColorDiv.parent("three");
 
-  let strokeColorButton = createButton('Choose Stroke Color');
+
+
+
+  //Buttons for choosing colors
+  let strokeColorButton = createButton('Choose Stroke');
   strokeColorButton.mouseClicked(selectStroke);
-  strokeColorButton.parent("five");
-  
-  let fillColorButton = createButton('Choose Fill Color');
+  strokeColorButton.parent("four");
+
+  let fillColorButton = createButton('Choose Fill');
   fillColorButton.mouseClicked(selectFill);
-  fillColorButton.parent("five")
-  
-  
-  
+  fillColorButton.parent("four")
+
+
+
+
+  //Buttons for no fill and no stroke
   let noStrokeButton = createButton("No Stroke");
   noStrokeButton.mouseClicked(makeNoStroke);
-  noStrokeButton.parent("six");
-  
+  noStrokeButton.parent("five");
+
   let noFillButton = createButton("No Fill");
   noFillButton.mouseClicked(makeNoFill);
-  noFillButton.parent("six");
-  
+  noFillButton.parent("five");
 
- 
+
+
+
+  //Slider for thickness of drawing
+  createSpan("Stroke Weight: ").parent("six");
+  thickSpan = createSpan("" + thickness);
+  thickSpan.parent("six");
 
   thickSlider = createSlider(1, 20, thickness, 1);
   thickSlider.input(selectThickness);
   thickSlider.id("thickSlider");
-  thickSlider.parent("seven")
-  
-  createSpan("Stroke Weight: ").parent("seven");
-  thickSpan = createSpan("" + thickness);
-  thickSpan.parent("seven");
-  
-  
+  thickSlider.parent("six");
+
+
+
+  //initially displaying current choice of colors
   displayCurrentColor();
   showFill();
   showStroke();
+
 }
 
 
@@ -157,7 +173,7 @@ function draw() {
   stroke(strokeRed, strokeGreen, strokeBlue, strokeAlpha);
   fill(fillRed, fillGreen, fillBlue, fillAlpha);
   strokeWeight(thickness);
-  
+
   if (isDrawing) {
     let point = {
       x: mouseX,
@@ -165,25 +181,25 @@ function draw() {
     }
     currentPath.push(point);
   }
-  
+
   beginShape();
   for(let i=0; i<currentPath.length; i++){
     vertex(currentPath[i].x, currentPath[i].y);
   }
   endShape();
-
 }
 
 
 
 
 
-
-function displayCurrentColor(){
-  currentColorDiv.style('background', `rgba(${redSlider.value()}, ${greenSlider.value()}, ${blueSlider.value()}, ${alphaSlider.value()})`);
+function startStopDrawing(){
+  isLooping() ? noLoop() : loop();
+  let drawBut = document.querySelector("#startStopDrawing");
+  colIndex++;
+  colIndex == 2 ? colIndex = 0 : colIndex = 1;
+  drawBut.style.backgroundColor = allowToDrawButtonColors[colIndex%2];
 }
-
-
 
 
 
@@ -192,44 +208,36 @@ function displayCurrentColor(){
 function mousePressed(){
   isDrawing = true;
   currentPath=[];
-  allPath.push(currentPath);
 }
 
-
-/*
-//overridding
-function mouseDragged(){
-  layer.ellipse(mouseX, mouseY, 5, 5);
-}
-*/
 
 
 //overriding
 function mouseReleased(){
   isDrawing = false;
- // pleaseClearTrails();
+  currentPath=[];
+}
+
+
+function touchStarted(event) {
+  isDrawing = true;
+  currentPath=[];
+}
+
+
+function touchEnded(event) {
+  isDrawing = false;
+  currentPath=[];
 }
 
 
 
 
 
-
-
-
+// Save the Master Piece🖌️
 function pleaseSave(){
   saveCanvas(cnv, 'painting', 'png');
 }
-
-
-
-/*
-//clear the trailing circles
-function pleaseClearTrails(){
-  layer.clear();
-  clear();
-}
-*/
 
 
 
@@ -280,6 +288,11 @@ function makeNoFill(){
 
 
 
+function displayCurrentColor() {
+  currentColorDiv.style('background', `rgba(${redSlider.value()}, ${greenSlider.value()}, ${blueSlider.value()}, ${alphaSlider.value()})`);
+}
+
+
 
 function showStroke(){
   strokeColorDiv.style('background', `rgba(${strokeRed}, ${strokeGreen}, ${strokeBlue}, ${strokeAlpha})`);
@@ -296,93 +309,4 @@ function showFill() {
 function selectThickness(){
   thickness = thickSlider.value();
   thickSpan.html("" + thickness);
-}
-
-
-
-
-
-
-
-
-function convertDecToHex(...colors)
-{
-  let res="#";
-  for(let color of colors){
-    res = res + getPartHexOf(color);
-  }
-  return res;
-}
-
-
-function getPartHexOf(r){
-  return getHexValue(parseInt(r/16))+""+ getHexValue(r%16);
-}
-
-
-function getHexValue(r){
-  switch(r){
-    case 0: return "0";
-    case 1: return "1";
-    case 2: return "2";
-    case 3: return "3";
-    case 4: return "4";
-    case 5: return "5";
-    case 6: return "6";
-    case 7: return "7";
-    case 8: return "8";
-    case 9: return "9";
-    case 10: return "a";
-    case 11: return "b";
-    case 12: return "c";
-    case 13: return "d";
-    case 14: return "e";
-    case 15: return "f";
-  }
-}
-
-
-function convertHexToDec(
-  inputColorString)
-{
-  let colorString=inputColorString.substring(1);
-  
-  let resColorArr = [];
-  
-  for(let i = 0; i < colorString.length - 1; i += 2)
-  {
-    partColorString = colorString.substring(i,i+2);
-    
-    let colorValue = 16 * getDecValue(partColorString.charAt(0)) + getDecValue(partColorString.charAt(1));
-    
-    resColorArr.push(colorValue);
-  }
-  return resColorArr;
-}
-
-
-
-
-function getDecValue(s){
-  let res=0;
-  s = s.toLowerCase();
-  switch(s){
-    case '0': res=0; break;
-    case '1': res=1; break; 
-    case '2': res=2; break;
-    case '3': res=3; break;
-    case '4': res=4; break;
-    case '5': res=5; break;
-    case '6': res=6; break; 
-    case '7': res=7; break;
-    case '8': res=8; break;
-    case '9': res=9; break;
-    case 'a': res=10; break;
-    case 'b': res=11; break;
-    case 'c': res=12; break;
-    case 'd': res=13; break;
-    case 'e': res=14; break;
-    case 'f': res=15; break;
-  }
-  return parseInt(res);
 }

@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="p5.js"></script>
-    <script src="p5.sound.min.js"></script>
-    
-    <link rel="stylesheet" type="text/css" href="style.css">
-    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
+    <title>
+      Photo Gallery
+    </title>
+
+    <!--
+      Main thing of the web app is to take autographs of people on shirt
+      additional thing is photo, name and write
+    -->
+
+    <script src="p5.js"></script>
+    <script src="p5.sound.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
     <!--link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500&display=swap" rel="stylesheet"-->
   </head>
   <body>
-    <div id="canvasDiv">
+
+    <div id="cnvOutDiv">
+
+      <div id="canvasDiv">
+      </div>
+
+      <div>
+
+        <div class="centerWrap">
+          <button onclick="showHideSettings()">⚙🔽</button>
+        </div>
+
+        <div id="settingsDiv">
+          <div id="one" class="centerWrap"></div>
+          <div id="two"></div>
+          <div id="three" class="centerWrap"></div>
+          <div id="four" class="centerWrap"></div>
+          <div id="five" class="centerWrap"></div>
+          <div id="six" ></div>
+          <div class="centerWrap">
+            <button onclick="showHideSettings()">⚙🔼</button>
+          </div>
+        </div>
+
+      </div>
+
     </div>
-    
-    <hr/>
-    
-    <div>
-      <div id="one"></div>
-      <div id="two"></div>
-      <div id="three"></div>
-      <div id="four"></div>
-      <div id="five"></div>
-      <div id="six"></div>
-      <div id="seven"></div>
-    </div>
-    
+
     <script src="sketch.js">
     </script>
+
+    <script src="showHideDiv.js">
+    </script>
+
   </body>
 </html>
