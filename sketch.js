@@ -3,7 +3,7 @@
 let redSlider;
 let greenSlider;
 let blueSlider;
-let alphaSlider;
+// let alphaSlider;
 let currentColorDiv;
 let strokeColorDiv;
 let fillColorDiv;
@@ -19,7 +19,7 @@ let isDrawing = false;
 
 let cnv;
 
-let allowToDrawButtonColors = ["pink", "transparent"];
+let allowToDrawButtonColors = ["transparent", "#FFAB91"];
 let colIndex = 0;
 
 let cnvWidth = 0;
@@ -43,12 +43,14 @@ function setup() {
   cnv.parent("canvasDiv");
 
 
+  clear();
+
 
   //stroke color
   strokeRed = 208;
   strokeGreen = 180;
   strokeBlue = 235;
-  strokeAlpha = 255;
+  strokeAlpha = 1;
   //fill color
   fillRed = 0;
   fillGreen = 0;
@@ -59,7 +61,7 @@ function setup() {
 
 
   //Buttons for save, delete and start drawing
-  let saveButton = createButton('Save Master Piece');
+  let saveButton = createButton('Save 💾');
   saveButton.mouseClicked(pleaseSave);
   saveButton.parent("one");
 
@@ -71,7 +73,23 @@ function setup() {
   drawButton.mouseClicked(startStopDrawing);
   drawButton.parent('one');
   drawButton.id("startStopDrawing");
+  drawButton.style('text-decoration', "none");
   drawButton.style("background-color", allowToDrawButtonColors[colIndex]);
+  drawButton.elt.onmouseenter = () => {
+    drawButton.elt.style.backgroundColor = "#FBE9E7";
+  };
+  drawButton.elt.onmouseleave = () => {
+    drawButton.elt.style.backgroundColor = allowToDrawButtonColors[colIndex];
+  };
+  drawButton.elt.onmousedown = () => {
+    drawButton.elt.style.backgroundColor = '#FF7043';
+  };
+
+
+  let fillCnvButton = createButton("Fill Canvas");
+  fillCnvButton.mouseClicked(fillCanvas);
+  fillCnvButton.parent("one");
+
 
 
 
@@ -92,15 +110,15 @@ function setup() {
   blueSlider.parent("two");
 
 
-  alphaSlider=createSlider(0, 255, strokeAlpha, 1);
-  alphaSlider.id("alphaSlider");
-  alphaSlider.parent("two");
+  // alphaSlider=createSlider(0, 1, strokeAlpha, 0);
+  // alphaSlider.id("alphaSlider");
+  // alphaSlider.parent("two");
 
 
   redSlider.input(displayCurrentColor);
   greenSlider.input(displayCurrentColor);
   blueSlider.input(displayCurrentColor);
-  alphaSlider.input(displayCurrentColor);
+  // alphaSlider.input(displayCurrentColor);
 
 
 
@@ -128,7 +146,7 @@ function setup() {
 
   let fillColorButton = createButton('Choose Fill');
   fillColorButton.mouseClicked(selectFill);
-  fillColorButton.parent("four")
+  fillColorButton.parent("four");
 
 
 
@@ -150,7 +168,7 @@ function setup() {
   thickSpan = createSpan("" + thickness);
   thickSpan.parent("six");
 
-  thickSlider = createSlider(1, 20, thickness, 1);
+  thickSlider = createSlider(1, 50, thickness, 1);
   thickSlider.input(selectThickness);
   thickSlider.id("thickSlider");
   thickSlider.parent("six");
@@ -170,8 +188,8 @@ function setup() {
 
 
 function draw() {
-  stroke(strokeRed, strokeGreen, strokeBlue, strokeAlpha);
-  fill(fillRed, fillGreen, fillBlue, fillAlpha);
+  stroke(strokeRed, strokeGreen, strokeBlue, map(strokeAlpha, 0, 1, 0, 255));
+  fill(fillRed, fillGreen, fillBlue, map(fillAlpha, 0, 1, 0, 255));
   strokeWeight(thickness);
 
   if (isDrawing) {
@@ -192,13 +210,20 @@ function draw() {
 
 
 
+function fillCanvas(){
+  background(random(255), random(255), random(255), 255);
+}
+
+
+
+
 
 function startStopDrawing(){
   isLooping() ? noLoop() : loop();
   let drawBut = document.querySelector("#startStopDrawing");
-  colIndex++;
-  colIndex == 2 ? colIndex = 0 : colIndex = 1;
-  drawBut.style.backgroundColor = allowToDrawButtonColors[colIndex%2];
+  colIndex = colIndex == 0 ? 1 : 0;
+  drawBut.style.backgroundColor = allowToDrawButtonColors[colIndex];
+  drawBut.style.textDecoration = colIndex == 0 ? "none" : "line-through";
 }
 
 
@@ -255,7 +280,7 @@ function selectStroke(){
   strokeRed = redSlider.value();
   strokeGreen = greenSlider.value();
   strokeBlue = blueSlider.value();
-  strokeAlpha = alphaSlider.value();
+  strokeAlpha = 1; //alphaSlider.value();
   showStroke();
 }
 
@@ -265,7 +290,7 @@ function selectFill(){
   fillRed = redSlider.value();
   fillGreen = greenSlider.value();
   fillBlue = blueSlider.value();
-  fillAlpha = alphaSlider.value();
+  fillAlpha = 1; //alphaSlider.value();
   showFill();
 }
 
@@ -289,7 +314,7 @@ function makeNoFill(){
 
 
 function displayCurrentColor() {
-  currentColorDiv.style('background', `rgba(${redSlider.value()}, ${greenSlider.value()}, ${blueSlider.value()}, ${alphaSlider.value()})`);
+  currentColorDiv.style('background', `rgba(${redSlider.value()}, ${greenSlider.value()}, ${blueSlider.value()}, 1)`);
 }
 
 
