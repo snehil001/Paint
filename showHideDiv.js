@@ -1,5 +1,6 @@
 let shown = false;
-let settingsDiv = document.querySelector('#settingsDiv');
+let settingsDiv = document.querySelector('.menu');
+
 function showHideSettings(){
   if(shown){
     settingsDiv.style.display = 'none';

@@ -24,33 +24,47 @@
   </head>
   <body>
 
+
+    <div class="menu-btn-div">
+      <button class="menu-btn" onclick="showHideSettings()">⚙</button>
+    </div>
+
     <div id="cnvOutDiv">
 
       <div id="canvasDiv">
       </div>
-
-      <div>
-
+      
+      <div class="menu">
+        
         <div class="centerWrap">
-          <button onclick="showHideSettings()">⚙🔽</button>
-          <a href="#">Post Here🚀</a>
+          <button onclick="pleaseSave()">
+            Save 💾
+          </button>
+          <button onclick="fillCanvas()">
+            Fill Canvas
+          </button>
+          <button id="startStopDrawing" onclick="startStopDrawing()">
+            🖌
+          </button>
+          <button onclick="pleaseClearArt()">
+            🗑️
+          </button>
         </div>
 
-        <div id="settingsDiv">
-          <div id="one" class="centerWrap"></div>
-          <div id="two"></div>
-          <div id="three" class="centerWrap"></div>
-          <div id="four" class="centerWrap"></div>
-          <div id="five" class="centerWrap"></div>
-          <div id="six"></div>
-          <div class="centerWrap">
-            <button onclick="showHideSettings()">⚙🔼</button>
-          </div>
-        </div>
-
+        <div id="two"></div>
+        <div id="three" class="centerWrap"></div>
+        <div id="four" class="centerWrap"></div>
+        <div id="five" class="centerWrap"></div>
+        <div id="six"></div>
+        
       </div>
-
+    
     </div>
+  
+
+            
+  <!-- <a href="#">Post Here🚀</a> -->
+          
 
     <script src="sketch.js">
     </script>

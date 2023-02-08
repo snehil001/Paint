@@ -19,8 +19,8 @@ let isDrawing = false;
 
 let cnv;
 
-let allowToDrawButtonColors = ["transparent", "#FFAB91"];
-let colIndex = 0;
+// let allowToDrawButtonColors = ["transparent", "#FFAB91"];
+// let isDrawAllowed = true;
 
 let cnvWidth = 0;
 let cnvHeight = 0;
@@ -60,38 +60,25 @@ function setup() {
   thickness = 5;
 
 
-  //Buttons for save, delete and start drawing
-  let saveButton = createButton('Save 💾');
-  saveButton.mouseClicked(pleaseSave);
-  saveButton.parent("one");
+  cnv.mousePressed(() => {
+    isDrawing = true;
+    currentPath=[];
+  });
 
-  let clearButton = createButton('🗑️');
-  clearButton.mouseClicked(pleaseClearArt);
-  clearButton.parent("one");
+  cnv.mouseReleased(() => {
+    isDrawing = false;
+    currentPath=[];
+  });
 
-  let drawButton = createButton('🖌');
-  drawButton.mouseClicked(startStopDrawing);
-  drawButton.parent('one');
-  drawButton.id("startStopDrawing");
-  drawButton.style('text-decoration', "none");
-  drawButton.style("background-color", allowToDrawButtonColors[colIndex]);
-  drawButton.elt.onmouseenter = () => {
-    drawButton.elt.style.backgroundColor = "#FBE9E7";
-  };
-  drawButton.elt.onmouseleave = () => {
-    drawButton.elt.style.backgroundColor = allowToDrawButtonColors[colIndex];
-  };
-  drawButton.elt.onmousedown = () => {
-    drawButton.elt.style.backgroundColor = '#FF7043';
-  };
+  cnv.touchStarted(() => {
+    isDrawing = true;
+    currentPath=[];
+  });
 
-
-  let fillCnvButton = createButton("Fill Canvas");
-  fillCnvButton.mouseClicked(fillCanvas);
-  fillCnvButton.parent("one");
-
-
-
+  cnv.touchEnded(() => {
+    isDrawing = false;
+    currentPath=[];
+  });
 
 
   //Sliders for red, green, blue, and alpha
@@ -217,44 +204,11 @@ function fillCanvas(){
 
 
 
-
 function startStopDrawing(){
+  // isDrawAllowed = !isDrawAllowed;
   isLooping() ? noLoop() : loop();
-  let drawBut = document.querySelector("#startStopDrawing");
-  colIndex = colIndex == 0 ? 1 : 0;
-  drawBut.style.backgroundColor = allowToDrawButtonColors[colIndex];
-  drawBut.style.textDecoration = colIndex == 0 ? "none" : "line-through";
+  select("#startStopDrawing").elt.classList.toggle("draw-not-allowed");
 }
-
-
-
-
-//overridding
-function mousePressed(){
-  isDrawing = true;
-  currentPath=[];
-}
-
-
-
-//overriding
-function mouseReleased(){
-  isDrawing = false;
-  currentPath=[];
-}
-
-
-function touchStarted(event) {
-  isDrawing = true;
-  currentPath=[];
-}
-
-
-function touchEnded(event) {
-  isDrawing = false;
-  currentPath=[];
-}
-
 
 
 
@@ -271,6 +225,20 @@ function pleaseClearArt(){
   clear();
 }
 
+
+
+
+function mouseReleased() {
+  isDrawing = false;
+  currentPath=[];
+}
+
+
+
+function touchEnded() {
+  isDrawing = false;
+  currentPath=[];
+}
 
 
 
